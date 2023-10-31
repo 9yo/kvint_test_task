@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  server:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      RABBIT_HOST: "rabbitmq"
+      REPORT_QUEUE: "$REPORT_QUEUE"
+      PHONE_DATA_STORAGE_PATH: "/data/data.json"
+    command: ["poetry", "run", "python", "-m", "src.service"]
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ../src:/app/src
+      - "$PHONE_DATA_STORAGE_PATH:/data/data.json"
+
+  client:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      RABBIT_HOST: "rabbitmq"
+      REPORT_QUEUE: "$REPORT_QUEUE"
+    command: ["poetry", "run", "python", "-m", "src.client"]
+    depends_on:
+      - server
+    volumes:
+      - ../src:/app/src
