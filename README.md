@@ -4,7 +4,13 @@ make start-rabbitmq
 # set data.json path
 export PHONE_DATA_STORAGE_PATH="path to data.json file." 
 make start-docker-demo
+
+# send task/recieve result after some time - ~100sec
+docker logs deployment-client-1
+# check task recieved/send result to client
+docker logs deployment-server-1
 ```
+
 ## Other start options
 ```bash
 pip install poetry
