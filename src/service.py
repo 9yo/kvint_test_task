@@ -8,7 +8,7 @@ from typing import List
 
 import aio_pika
 
-from src.report_generator import generate_report
+from src.report_generator import generate_report_fast
 from src.settings import RABBIT_HOST, REPORT_QUEUE
 
 logging.basicConfig(level=logging.INFO)
@@ -30,7 +30,7 @@ async def generate_report_callback(message: aio_pika.IncomingMessage):
 
         logger.info(f"Received phone numbers: {phone_numbers}")
         logger.info("Generating report...")
-        stats: defaultdict[int, dict] = await generate_report(
+        stats: defaultdict[int, dict] = await generate_report_fast(
             phone_numbers=phone_numbers
         )
         result = {
